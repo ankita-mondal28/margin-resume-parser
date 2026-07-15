@@ -1,0 +1,607 @@
+/* ==========================================================================
+   MARGIN — design tokens
+   Concept: your resume, annotated by hand on a warm wooden desk.
+   Not the usual cream+terracotta AI-dashboard look, not dark+neon.
+   ========================================================================== */
+
+:root {
+  /* Desk (page background) vs. paper (card surfaces) are two different tones,
+     so paper reads as an object sitting on a surface, not a flat page. */
+  --desk: #e7dfce;
+  --desk-shadow: #d8cdb4;
+  --paper: #fdfaf3;
+  --paper-edge: #efe8d8;
+
+  --ink: #2b2a4a;        /* primary text, like fountain-pen ink */
+  --ink-soft: #6a6588;
+  --ink-faint: #a29fc0;
+
+  --berry: #b34d6b;      /* the "red pen" accent — annotations, score */
+  --berry-deep: #8c3b54;
+  --sage: #74926c;       /* positive / skills */
+  --sage-deep: #55704f;
+  --gold: #d29a3d;       /* highlighter accent */
+  --tape: #f0e0b8;       /* washi tape */
+  --tape-edge: #ddc890;
+
+  --danger: #b33f3f;
+
+  --font-hand: "Caveat", cursive;
+  --font-body: "Literata", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-paper: 6px;
+  --shadow-paper: 0 1px 2px rgba(43, 33, 24, 0.06), 0 12px 28px -12px rgba(43, 33, 24, 0.28);
+  --shadow-paper-lift: 0 2px 4px rgba(43, 33, 24, 0.08), 0 20px 40px -16px rgba(43, 33, 24, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--desk);
+  background-image: radial-gradient(circle at 20% 15%, #efe7d5 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, #ddd2b6 0%, transparent 40%);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--berry);
+  outline-offset: 3px;
+}
+
+a {
+  color: var(--berry-deep);
+}
+
+::selection {
+  background: var(--tape);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ==========================================================================
+   Layout shell
+   ========================================================================== */
+
+.app-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  font-family: var(--font-hand);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--berry-deep);
+  line-height: 1;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+
+.brand-tagline {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 15px;
+  max-width: 260px;
+}
+
+/* ==========================================================================
+   Washi tape (signature decorative element)
+   ========================================================================== */
+
+.washi {
+  position: absolute;
+  width: 90px;
+  height: 26px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--tape),
+    var(--tape) 6px,
+    var(--tape-edge) 6px,
+    var(--tape-edge) 12px
+  );
+  opacity: 0.85;
+  box-shadow: 0 2px 4px rgba(43, 33, 24, 0.12);
+}
+
+/* ==========================================================================
+   Upload zone (the "blank paper" state)
+   ========================================================================== */
+
+.paper-card {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--radius-paper);
+  box-shadow: var(--shadow-paper);
+  border: 1px solid var(--paper-edge);
+}
+
+.upload-stage {
+  max-width: 640px;
+  margin: 40px auto 0;
+}
+
+.upload-intro {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.upload-intro h1 {
+  font-family: var(--font-hand);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 8px;
+  transform: rotate(-1deg);
+}
+
+.upload-intro p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dropzone {
+  position: relative;
+  padding: 56px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dropzone::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 2px dashed var(--ink-faint);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.dropzone:hover,
+.dropzone.dragging {
+  transform: translateY(-2px) rotate(-0.3deg);
+  box-shadow: var(--shadow-paper-lift);
+}
+
+.dropzone.dragging::before {
+  border-color: var(--berry);
+}
+
+.dropzone-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.dropzone h2 {
+  font-family: var(--font-hand);
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--berry-deep);
+}
+
+.dropzone p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.dropzone .file-types {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+.file-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.selected-file-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: 4px;
+  box-shadow: var(--shadow-paper);
+}
+
+.selected-file-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--berry);
+  color: var(--paper);
+  box-shadow: 0 6px 16px -6px rgba(179, 77, 107, 0.6);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -6px rgba(179, 77, 107, 0.7);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 6px 10px;
+  text-decoration: underline;
+}
+
+.error-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #fbeaea;
+  border: 1px solid #e6b8b8;
+  border-radius: 4px;
+  color: var(--danger);
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* ==========================================================================
+   Loading state — a pen "writing"
+   ========================================================================== */
+
+.loading-stage {
+  max-width: 480px;
+  margin: 80px auto 0;
+  text-align: center;
+}
+
+.pen-scribble {
+  width: 120px;
+  height: 60px;
+  margin: 0 auto 20px;
+}
+
+.pen-scribble path {
+  fill: none;
+  stroke: var(--berry);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: scribble 1.4s ease-in-out infinite;
+}
+
+@keyframes scribble {
+  0% {
+    stroke-dashoffset: 220;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -220;
+  }
+}
+
+.loading-stage p {
+  font-family: var(--font-hand);
+  font-size: 24px;
+  color: var(--ink-soft);
+}
+
+/* ==========================================================================
+   Results — the annotated paper layout
+   ========================================================================== */
+
+.results-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .results-stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resume-sheet {
+  padding: 40px 36px;
+  position: relative;
+}
+
+.resume-sheet::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: -10px;
+  bottom: -10px;
+  background: var(--paper-edge);
+  border-radius: var(--radius-paper);
+  z-index: -1;
+}
+
+.resume-header {
+  border-bottom: 1px solid var(--paper-edge);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
+
+.resume-header h2 {
+  font-family: var(--font-hand);
+  font-size: 34px;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.resume-contact {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.resume-section {
+  margin-bottom: 26px;
+}
+
+.resume-section h3 {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--berry-deep);
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-summary {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-chip {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 4px 12px;
+  background: linear-gradient(transparent 55%, rgba(210, 154, 61, 0.35) 55%);
+  border: none;
+  color: var(--ink);
+}
+
+.entry-block {
+  margin-bottom: 16px;
+  padding-left: 14px;
+  border-left: 2px solid var(--paper-edge);
+}
+
+.entry-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.entry-dates {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.entry-subtitle {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.entry-description {
+  font-size: 14px;
+  color: var(--ink);
+  margin-top: 6px;
+  line-height: 1.55;
+}
+
+/* ---- Margin column (annotations) ---- */
+
+.margin-column {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: sticky;
+  top: 24px;
+}
+
+.sticky-note {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: 4px;
+  box-shadow: var(--shadow-paper);
+  padding: 22px 20px 18px;
+  transform: rotate(1deg);
+}
+
+.sticky-note:nth-child(even) {
+  transform: rotate(-1deg);
+}
+
+.sticky-note .washi {
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+.score-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.score-circle-svg {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.score-number {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.score-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--ink-faint);
+  letter-spacing: 0.08em;
+}
+
+.score-note {
+  font-family: var(--font-hand);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+.role-card {
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--paper-edge);
+}
+
+.role-card:last-child {
+  border-bottom: none;
+}
+
+.role-title {
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--sage-deep);
+}
+
+.role-reason {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.reset-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-top: 4px;
+}
+
+.reset-link:hover {
+  color: var(--berry-deep);
+}
+
+.empty-dash {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+footer.app-footer {
+  text-align: center;
+  margin-top: 64px;
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  font-family: var(--font-mono);
+}
